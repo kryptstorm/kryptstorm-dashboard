@@ -19,6 +19,6 @@ ReactDOM.render(
       <Route path="/" name="Home" component={App} />
     </Switch>
   </HashRouter>,
-  document.body
+  document.getElementById("kryptstorm-app")
 );
 registerServiceWorker();

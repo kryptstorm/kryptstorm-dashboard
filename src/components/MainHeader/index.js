@@ -1,24 +1,23 @@
 import React, { Component } from "react";
 
 class MainHeader extends Component {
+  constructor(props) {
+    super(props);
+  }
+  
   render() {
     return (
       <header className="main-header">
         <a href="../../index2.html" className="logo">
           <span className="logo-mini">
-            <b>A</b>LT
+            <img src="/images/kryptstorm/logo.png" alt="Krypt" />
           </span>
           <span className="logo-lg">
-            <b>Admin</b>LTE
+            <b>Krypt</b>storm
           </span>
         </a>
         <nav className="navbar navbar-static-top">
-          <a
-            href="#"
-            className="sidebar-toggle"
-            data-toggle="push-menu"
-            role="button"
-          >
+          <a href="#" className="sidebar-toggle">
             <span className="sr-only">Toggle navigation</span>
             <span className="icon-bar" />
             <span className="icon-bar" />
