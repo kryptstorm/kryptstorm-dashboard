@@ -1,6 +1,35 @@
 import React, { Component } from "react";
+import _ from "lodash";
 
 class MainSidebar extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    _.each(document.querySelectorAll(".treeview"), el =>
+      el.addEventListener("click", this.toggleMenu.bind(this))
+    );
+  }
+
+  toggleMenu(e) {
+    // Suffix icon
+    e.currentTarget.classList.toggle("menu-open");
+    // Show child menu
+    _.each(e.currentTarget.children, el => {
+      if (el.classList.contains("treeview-menu")) {
+        if (
+          el.ownerDocument.defaultView.getComputedStyle(el, null).display ===
+          "none"
+        ) {
+          el.style.display = "block";
+        } else {
+          el.style.display = "none";
+        }
+      }
+    });
+  }
+
   render() {
     return (
       <aside className="main-sidebar">
@@ -20,27 +49,7 @@ class MainSidebar extends Component {
               </a>
             </div>
           </div>
-          <form action="#" method="get" className="sidebar-form">
-            <div className="input-group">
-              <input
-                type="text"
-                name="q"
-                className="form-control"
-                placeholder="Search..."
-              />
-              <span className="input-group-btn">
-                <button
-                  type="submit"
-                  name="search"
-                  id="search-btn"
-                  className="btn btn-flat"
-                >
-                  <i className="fa fa-search" />
-                </button>
-              </span>
-            </div>
-          </form>
-          <ul className="sidebar-menu" data-widget="tree">
+          <ul className="sidebar-menu">
             <li className="header">MAIN NAVIGATION</li>
             <li className="treeview">
               <a href="#">

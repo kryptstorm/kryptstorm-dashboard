@@ -3,12 +3,22 @@ import React, { Component } from "react";
 class MainHeader extends Component {
   constructor(props) {
     super(props);
+
+    this.collapseSidebar = this.collapseSidebar.bind(this);
   }
-  
+
+  // Collapse sidebar
+  collapseSidebar(e) {
+    e.preventDefault();
+    document
+      .querySelector(".kryptstorm-app")
+      .classList.toggle("sidebar-collapse");
+  }
+
   render() {
     return (
       <header className="main-header">
-        <a href="../../index2.html" className="logo">
+        <a href="/" className="logo">
           <span className="logo-mini">
             <img src="/images/kryptstorm/logo.png" alt="Krypt" />
           </span>
@@ -17,7 +27,7 @@ class MainHeader extends Component {
           </span>
         </a>
         <nav className="navbar navbar-static-top">
-          <a href="#" className="sidebar-toggle">
+          <a href="#" className="sidebar-toggle" onClick={this.collapseSidebar}>
             <span className="sr-only">Toggle navigation</span>
             <span className="icon-bar" />
             <span className="icon-bar" />
