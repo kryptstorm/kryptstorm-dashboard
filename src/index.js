@@ -4,6 +4,7 @@ import { HashRouter, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "font-awesome/css/font-awesome.min.css";
+import "react-table/react-table.css";
 
 import "./custom/css/lte.min.css";
 import "./custom/css/skin-green.min.css";

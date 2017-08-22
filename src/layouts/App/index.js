@@ -8,6 +8,7 @@ import PageHeader from "../../components/PageHeader";
 import PageContent from "../../components/PageContent";
 
 import Dashboard from "../../views/Dashboard";
+import UsersList from "../../views/Users/List";
 
 class App extends Component {
   render() {
@@ -27,7 +28,13 @@ class App extends Component {
                   name="Dashboard"
                   component={Dashboard}
                 />
-                <Redirect from="/" to="/dashboard" />
+                <Route
+                  path="/users/list"
+                  name="UsersList"
+                  component={UsersList}
+                />
+                <Redirect exact from="/" to="/dashboard" />
+                <Redirect exact from="/users" to="/users/list" />
               </Switch>
             </PageContent>
           </div>
