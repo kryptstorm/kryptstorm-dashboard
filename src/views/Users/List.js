@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import ReactTable from "react-table";
 import Axios from "axios";
+import _ from "lodash";
+import QueryString from "query-string";
 
 class UsersList extends Component {
   constructor(props) {
@@ -9,14 +11,24 @@ class UsersList extends Component {
     this.fetchUsers = this.fetchUsers.bind(this);
   }
 
-  fetchUsers(state, instance) {
+  fetchUsers({ page = 0, pageSize = 20, sorted = [] }, instance) {
     this.setState({ loading: true });
-    Axios.get("http://localhost:9999/users").then(res =>
-      this.setState({
-        data: res.data.data,
+    const _query = QueryString.stringify({
+      _page: ++page,
+      _limit: pageSize,
+      _sort: _.reduce(sorted, (_sort, s) =>
+        _.assign(_sort, { [s.id]: s.desc ? -1 : 1 })
+      )
+    });
+    console.log("http://localhost:9999/users?" + _query);
+    Axios.get("http://localhost:9999/users?" + _query).then(({ data }) => {
+      if (data.errorCode !== "ERROR_NONE") return alert(data.message);
+      return this.setState({
+        data: data.data.rows,
+        pages: data.data.pages,
         loading: false
-      })
-    );
+      });
+    });
   }
 
   render() {
@@ -89,6 +101,7 @@ class UsersList extends Component {
             columns={columns}
             loading={this.state.loading}
             onFetchData={this.fetchUsers}
+            onPageChange={page => console.log(page)}
           />
         </div>
         <div className="box-footer">Footer</div>
