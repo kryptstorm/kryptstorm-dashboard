@@ -11,16 +11,26 @@ class UsersList extends Component {
     this.fetchUsers = this.fetchUsers.bind(this);
   }
 
-  fetchUsers({ page = 0, pageSize = 20, sorted = [] }, instance) {
+  fetchUsers(args, instance) {
+    const { page = 0, pageSize = 20, sorted = [], filtered = [] } = args;
+
     this.setState({ loading: true });
-    const _query = QueryString.stringify({
-      _page: ++page,
-      _limit: pageSize,
-      _sort: _.reduce(sorted, (_sort, s) =>
-        _.assign(_sort, { [s.id]: s.desc ? -1 : 1 })
-      )
-    });
-    console.log("http://localhost:9999/users?" + _query);
+    const _query = QueryString.stringify(
+      _.assign({
+        _page: page + 1,
+        _limit: pageSize,
+        _sort: _.reduce(
+          sorted,
+          (_sort, s) => _.assign(_sort, { [s.id]: s.desc ? -1 : 1 }),
+          {}
+        )
+      },  _.reduce(
+        filtered,
+        (_filter, f) => _.assign(_filter, { [f.id]: f.value }),
+        {}
+      ))
+    );
+
     Axios.get("http://localhost:9999/users?" + _query).then(({ data }) => {
       if (data.errorCode !== "ERROR_NONE") return alert(data.message);
       return this.setState({
@@ -96,6 +106,7 @@ class UsersList extends Component {
         <div className="box-body">
           <ReactTable
             manual
+            filterable
             data={this.state.data}
             pages={this.state.pages}
             columns={columns}
