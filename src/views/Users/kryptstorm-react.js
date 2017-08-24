@@ -36,8 +36,11 @@ export default class KryptstormReact {
     if (_.isArray(filtered) && !_.isEmpty(filtered)) {
       _.assign(
         _query,
-        (_filter, f) => _.assign(_filter, { [f.id]: f.value }),
-        {}
+        _.reduce(
+          filtered,
+          (_filter, f) => _.assign(_filter, { [f.id]: f.value }),
+          {}
+        )
       );
     }
 

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 const STATUS_INACTIVE = 0;
 const STATUS_ACTIVE = 1;
-const STATUS_LCOKED = 2;
+const STATUS_LOCKED = 2;
 
 export default class Status extends Component {
   render() {
@@ -22,7 +22,7 @@ export default class Status extends Component {
       );
     }
 
-    if (this.props.status === STATUS_LCOKED) {
+    if (this.props.status === STATUS_LOCKED) {
       return (
         <span className="text-danger">
           <i className="fa fa-fw fa-lg fa-lock" />

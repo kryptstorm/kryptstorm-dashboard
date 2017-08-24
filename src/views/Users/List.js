@@ -1,6 +1,7 @@
 // External modules
 import React, { Component } from "react";
 import ReactTable from "react-table";
+import Moment from "moment";
 
 // Internal modules
 import KryptstormReact from "./kryptstorm-react";
@@ -41,16 +42,13 @@ class UsersList extends Component {
   render() {
     const columns = [
       {
-        Header: "Id",
-        accessor: "id"
-      },
-      {
         Header: "Username",
         accessor: "username"
       },
       {
         Header: "Email",
-        accessor: "email"
+        accessor: "email",
+        minWidth: 150
       },
       {
         Header: "First Name",
@@ -69,20 +67,40 @@ class UsersList extends Component {
           <select
             onChange={event => onChange(event.target.value)}
             style={{ width: "100%" }}
-            value={filter ? filter.value : "all"}
+            value={filter ? filter.value : ""}
           >
-            <option value="all">Show All</option>
-            <option value="true">Can Drink</option>
-            <option value="false">Can't Drink</option>
-          </select>
+            <option>--- Show All ---</option>
+            <option value={0}>Inactive</option>
+            <option value={1}>Active</option>
+            <option value={2}>Locked</option>
+          </select>,
+        minWidth: 70
       },
       {
-        Header: "Creation Datetime",
-        accessor: "createdAt"
+        Header: "Created At",
+        accessor: "createdAt",
+        className: "text-center",
+        Cell: ({ value }) => Moment(value).format("YYYY-MM-DD")
       },
       {
-        Header: "Last update",
-        accessor: "updatedAt"
+        Header: "Updated At",
+        accessor: "updatedAt",
+        className: "text-center",
+        Cell: ({ value }) => Moment(value).format("YYYY-MM-DD")
+      },
+      {
+        Header: "Action",
+        Header: "Id",
+        accessor: "id",
+        className: "text-center",
+        Cell: ({ value }) =>
+          <div className="item-actions">
+            <i className="fa fa-lg fa-fw fa-trash-o text-danger" />
+            <i className="fa fa-lg fa-fw fa-envelope-o" />
+            <i className="fa fa-lg fa-fw fa-pencil-square-o" />
+          </div>,
+        filterable: false,
+        sortable: false
       }
     ];
 
@@ -114,7 +132,7 @@ class UsersList extends Component {
         </div>
         <div className="box-body">
           <ReactTable
-            className="-striped"
+            className="-striped -highlight"
             manual
             filterable
             data={this.state.data}
@@ -122,6 +140,19 @@ class UsersList extends Component {
             columns={columns}
             loading={this.state.loading}
             onFetchData={this.fetchUsers}
+            defaultSorted={[
+              {
+                id: "createdAt",
+                desc: true
+              }
+            ]}
+            defaultFiltered={[
+              {
+                id: "status",
+                value: 1
+              }
+            ]}
+            defaultPageSize={50}
           />
         </div>
         <div className="box-footer">Footer</div>
