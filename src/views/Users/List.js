@@ -13,23 +13,28 @@ class UsersList extends Component {
 
   fetchUsers(args, instance) {
     const { page = 0, pageSize = 20, sorted = [], filtered = [] } = args;
+    console.log(sorted);
 
     this.setState({ loading: true });
     const _query = QueryString.stringify(
-      _.assign({
-        _page: page + 1,
-        _limit: pageSize,
-        _sort: _.reduce(
-          sorted,
-          (_sort, s) => _.assign(_sort, { [s.id]: s.desc ? -1 : 1 }),
+      _.assign(
+        {
+          _page: page + 1,
+          _limit: pageSize,
+          _sort: _.reduce(
+            sorted,
+            (_sort, s) => (_sort += (s.desc ? "-" : "") + s.id),
+            ""
+          )
+        },
+        _.reduce(
+          filtered,
+          (_filter, f) => _.assign(_filter, { [f.id]: f.value }),
           {}
         )
-      },  _.reduce(
-        filtered,
-        (_filter, f) => _.assign(_filter, { [f.id]: f.value }),
-        {}
-      ))
+      )
     );
+    console.log(_query);
 
     Axios.get("http://localhost:9999/users?" + _query).then(({ data }) => {
       if (data.errorCode !== "ERROR_NONE") return alert(data.message);
