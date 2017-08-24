@@ -1,8 +1,14 @@
+// External modules
 import React, { Component } from "react";
 import ReactTable from "react-table";
-import Axios from "axios";
-import _ from "lodash";
-import QueryString from "query-string";
+
+// Internal modules
+import KryptstormReact from "./kryptstorm-react";
+import Status from "../../components/Status";
+
+const UsersService = new KryptstormReact({
+  endpoint: "http://localhost:9999/users"
+});
 
 class UsersList extends Component {
   constructor(props) {
@@ -12,38 +18,24 @@ class UsersList extends Component {
   }
 
   fetchUsers(args, instance) {
-    const { page = 0, pageSize = 20, sorted = [], filtered = [] } = args;
-    console.log(sorted);
-
     this.setState({ loading: true });
-    const _query = QueryString.stringify(
-      _.assign(
-        {
-          _page: page + 1,
-          _limit: pageSize,
-          _sort: _.reduce(
-            sorted,
-            (_sort, s) => (_sort += (s.desc ? "-" : "") + s.id),
-            ""
-          )
-        },
-        _.reduce(
-          filtered,
-          (_filter, f) => _.assign(_filter, { [f.id]: f.value }),
-          {}
-        )
-      )
-    );
-    console.log(_query);
+    UsersService.search(
+      args
+    ).then(
+      ({
+        errorCode = "ERROR_NONE",
+        data = {},
+        message = "An error has been encountered"
+      }) => {
+        if (errorCode !== "ERROR_NONE") return alert(message);
 
-    Axios.get("http://localhost:9999/users?" + _query).then(({ data }) => {
-      if (data.errorCode !== "ERROR_NONE") return alert(data.message);
-      return this.setState({
-        data: data.data.rows,
-        pages: data.data.pages,
-        loading: false
-      });
-    });
+        return this.setState({
+          data: data.rows,
+          pages: data.pages,
+          loading: false
+        });
+      }
+    );
   }
 
   render() {
@@ -70,7 +62,19 @@ class UsersList extends Component {
       },
       {
         Header: "Status",
-        accessor: "status"
+        accessor: "status",
+        className: "text-center",
+        Cell: ({ value }) => <Status status={value} />,
+        Filter: ({ filter, onChange }) =>
+          <select
+            onChange={event => onChange(event.target.value)}
+            style={{ width: "100%" }}
+            value={filter ? filter.value : "all"}
+          >
+            <option value="all">Show All</option>
+            <option value="true">Can Drink</option>
+            <option value="false">Can't Drink</option>
+          </select>
       },
       {
         Header: "Creation Datetime",
@@ -110,6 +114,7 @@ class UsersList extends Component {
         </div>
         <div className="box-body">
           <ReactTable
+            className="-striped"
             manual
             filterable
             data={this.state.data}
@@ -117,7 +122,6 @@ class UsersList extends Component {
             columns={columns}
             loading={this.state.loading}
             onFetchData={this.fetchUsers}
-            onPageChange={page => console.log(page)}
           />
         </div>
         <div className="box-footer">Footer</div>

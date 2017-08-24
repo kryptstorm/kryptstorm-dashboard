@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 
-class MainSidebar extends Component {
+export default class MainSidebar extends Component {
   constructor(props) {
     super(props);
   }
@@ -385,5 +385,3 @@ class MainSidebar extends Component {
     );
   }
 }
-
-export default MainSidebar;
