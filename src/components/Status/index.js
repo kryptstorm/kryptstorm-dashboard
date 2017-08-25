@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const STATUS_INACTIVE = 0;
 const STATUS_ACTIVE = 1;
@@ -33,3 +34,7 @@ export default class Status extends Component {
     return "";
   }
 }
+
+Status.propTypes = {
+  status: PropTypes.number
+};

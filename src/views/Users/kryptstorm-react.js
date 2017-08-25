@@ -1,7 +1,6 @@
 // External modules
 import Axios from "axios";
 import _ from "lodash";
-import QueryString from "query-string";
 
 export default class KryptstormReact {
   constructor(options = {}) {
@@ -19,14 +18,13 @@ export default class KryptstormReact {
 
   search(args) {
     const { page = 0, pageSize = 20, sorted = [], filtered = [] } = args;
-
-    let _query = {
+    let params = {
       _page: page + 1,
       _limit: pageSize
     };
 
     if (_.isArray(sorted) && !_.isEmpty(sorted)) {
-      _query._sort = _.reduce(
+      params._sort = _.reduce(
         sorted,
         (_sort, s) => (_sort += (s.desc ? "-" : "") + s.id),
         ""
@@ -35,7 +33,7 @@ export default class KryptstormReact {
 
     if (_.isArray(filtered) && !_.isEmpty(filtered)) {
       _.assign(
-        _query,
+        params,
         _.reduce(
           filtered,
           (_filter, f) => _.assign(_filter, { [f.id]: f.value }),
@@ -45,7 +43,16 @@ export default class KryptstormReact {
     }
 
     return this._service
-      .get(`/?${QueryString.stringify(_query)}`)
+      .get("/", { params })
+      .then(({ data = {} }) => Promise.resolve(data));
+  }
+
+  remove(args) {
+    const { id } = args;
+    let headers = { "X-HTTP-Method-Override": "DELETE" };
+
+    return this._service
+      .post(`/${id}`, {}, { headers })
       .then(({ data = {} }) => Promise.resolve(data));
   }
 }

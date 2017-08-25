@@ -15,28 +15,44 @@ class UsersList extends Component {
   constructor(props) {
     super(props);
     this.state = { loading: false, data: [], pages: -1 };
-    this.fetchUsers = this.fetchUsers.bind(this);
   }
 
-  fetchUsers(args, instance) {
+  search(args, instance) {
     this.setState({ loading: true });
-    UsersService.search(
-      args
-    ).then(
-      ({
-        errorCode = "ERROR_NONE",
-        data = {},
-        message = "An error has been encountered"
-      }) => {
-        if (errorCode !== "ERROR_NONE") return alert(message);
+    UsersService.search(args)
+      .then(
+        ({
+          errorCode = "ERROR_NONE",
+          data = {},
+          message = "An error has been encountered"
+        }) => {
+          if (errorCode !== "ERROR_NONE") return alert(message);
 
-        return this.setState({
-          data: data.rows,
-          pages: data.pages,
-          loading: false
-        });
-      }
-    );
+          return this.setState({
+            data: data.rows,
+            pages: data.pages,
+            loading: false
+          });
+        }
+      )
+      .catch(err => alert(err.message));
+  }
+
+  remove(args) {
+    args.id = args.value;
+    UsersService.remove(args)
+      .then(
+        ({
+          errorCode = "ERROR_NONE",
+          data = {},
+          message = "An error has been encountered"
+        }) => {
+          if (errorCode !== "ERROR_NONE") return alert(message);
+
+          return this.search(args);
+        }
+      )
+      .catch(err => alert(err.message));
   }
 
   render() {
@@ -90,13 +106,14 @@ class UsersList extends Component {
       },
       {
         Header: "Action",
-        Header: "Id",
         accessor: "id",
         className: "text-center",
-        Cell: ({ value }) =>
+        Cell: args =>
           <div className="item-actions">
-            <i className="fa fa-lg fa-fw fa-trash-o text-danger" />
-            <i className="fa fa-lg fa-fw fa-envelope-o" />
+            <i
+              className="fa fa-lg fa-fw fa-trash-o text-danger"
+              onClick={this.remove.bind(this, args)}
+            />
             <i className="fa fa-lg fa-fw fa-pencil-square-o" />
           </div>,
         filterable: false,
@@ -139,7 +156,7 @@ class UsersList extends Component {
             pages={this.state.pages}
             columns={columns}
             loading={this.state.loading}
-            onFetchData={this.fetchUsers}
+            onFetchData={this.search.bind(this)}
             defaultSorted={[
               {
                 id: "createdAt",
