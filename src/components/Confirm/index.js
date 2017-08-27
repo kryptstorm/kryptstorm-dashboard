@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Button, Modal } from "react-bootstrap";
 
-class DeleteConfirm extends Component {
+class Confirm extends Component {
   constructor(props) {
     super(props);
     this.state = { isOpen: false };
@@ -20,7 +20,7 @@ class DeleteConfirm extends Component {
   };
 
   submit = e => {
-    if (this.props.onYes) this.props.onYes(this.props.data);
+    this.props.onYes(this.props.data);
     this.close();
   };
 
@@ -37,12 +37,12 @@ class DeleteConfirm extends Component {
     return (
       <Modal show={this.state.isOpen} onHide={this.close}>
         <Modal.Header closeButton>
-          <Modal.Title>Delete Confirm</Modal.Title>
+          <Modal.Title>
+            {this.props.title ? this.props.title : "Confirm"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p className="text-danger text-center">
-            Do you want to delete this user?
-          </p>
+          {this.props.content}
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.cancel}>
@@ -58,4 +58,14 @@ class DeleteConfirm extends Component {
   }
 }
 
-export default DeleteConfirm;
+Confirm.propTypes = {
+  onNo: PropTypes.func,
+  noLabel: PropTypes.string,
+  onYes: PropTypes.func.isRequired,
+  yesLabel: PropTypes.string,
+  title: PropTypes.string,
+  content: PropTypes.element.isRequired,
+  data: PropTypes.object.isRequired
+};
+
+export default Confirm;

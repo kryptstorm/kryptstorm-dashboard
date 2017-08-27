@@ -5,7 +5,7 @@ const STATUS_INACTIVE = 0;
 const STATUS_ACTIVE = 1;
 const STATUS_LOCKED = 2;
 
-export default class Status extends Component {
+class Status extends Component {
   render() {
     if (this.props.status === STATUS_INACTIVE) {
       return (
@@ -38,3 +38,5 @@ export default class Status extends Component {
 Status.propTypes = {
   status: PropTypes.number
 };
+
+export default Status;

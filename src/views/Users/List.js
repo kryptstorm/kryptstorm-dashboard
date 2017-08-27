@@ -7,7 +7,7 @@ import _ from "lodash";
 // Internal modules
 import KryptstormClient from "./kryptstorm-client";
 import Status from "../../components/Status";
-import DeleteConfirm from "./DeleteConfirm";
+import Confirm from "../../components/Confirm";
 
 const UsersService = new KryptstormClient({
   endpoint: "http://localhost:9999/users"
@@ -113,7 +113,13 @@ class UsersList extends Component {
         Cell: args =>
           <div className="item-actions">
             <i className="fa fa-lg fa-fw fa-pencil-square-o" />
-            <DeleteConfirm
+            <Confirm
+              title={"Delete Confirm"}
+              content={
+                <p className="text-danger text-center">
+                  Do you want to delete user: {args.row.firstName} {args.row.lastName}?
+                </p>
+              }
               onYes={this.remove}
               data={_.assign({}, args, { id: args.value })}
             />
