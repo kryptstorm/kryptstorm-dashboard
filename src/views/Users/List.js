@@ -16,11 +16,11 @@ const UsersService = new KryptstormClient({
 class UsersList extends Component {
   constructor(props) {
     super(props);
-    this.state = { loading: false, data: [], pages: -1, currentTableState: {} };
+    this.state = { loading: false, data: [], pages: -1, _query: {} };
   }
 
   search = (args, instance) => {
-    this.setState({ currentTableState: args });
+    this.setState({ _query: args });
     this.setState({ loading: true });
     UsersService.search(args)
       .then(
@@ -51,7 +51,7 @@ class UsersList extends Component {
         }) => {
           if (errorCode !== "ERROR_NONE") return alert(message);
 
-          return this.search(this.state.currentTableState);
+          return this.search(this.state._query);
         }
       )
       .catch(err => alert(err.message));
@@ -92,7 +92,8 @@ class UsersList extends Component {
             <option value={1}>Active</option>
             <option value={2}>Locked</option>
           </select>,
-        minWidth: 70
+        minWidth: 70,
+        sortable: false
       },
       {
         Header: "Created At",
@@ -114,10 +115,14 @@ class UsersList extends Component {
           <div className="item-actions">
             <i className="fa fa-lg fa-fw fa-pencil-square-o" />
             <Confirm
+              triggerElement={
+                <i className="fa fa-lg fa-fw fa-trash-o text-danger" />
+              }
               title={"Delete Confirm"}
               content={
                 <p className="text-danger text-center">
-                  Do you want to delete user: {args.row.firstName} {args.row.lastName}?
+                  Do you want to delete user: {args.row.firstName}{" "}
+                  {args.row.lastName}?
                 </p>
               }
               onYes={this.remove}

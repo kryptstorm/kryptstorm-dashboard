@@ -6,9 +6,6 @@ class Confirm extends Component {
   constructor(props) {
     super(props);
     this.state = { isOpen: false };
-
-    this.cancel = this.cancel.bind(this);
-    this.submit = this.submit.bind(this);
   }
 
   open = e => this.setState({ isOpen: true });
@@ -26,12 +23,9 @@ class Confirm extends Component {
 
   render() {
     if (!this.state.isOpen) {
-      return (
-        <i
-          className="fa fa-lg fa-fw fa-trash-o text-danger"
-          onClick={this.open}
-        />
-      );
+      return React.cloneElement(this.props.triggerElement, {
+        onClick: this.open
+      });
     }
 
     return (
@@ -59,6 +53,7 @@ class Confirm extends Component {
 }
 
 Confirm.propTypes = {
+  triggerElement: PropTypes.element.isRequired,
   onNo: PropTypes.func,
   noLabel: PropTypes.string,
   onYes: PropTypes.func.isRequired,

@@ -16,7 +16,7 @@ export default class KryptstormReact {
     });
   }
 
-  search(args) {
+  search = args => {
     const { page = 0, pageSize = 20, sorted = [], filtered = [] } = args;
     let params = {
       _page: page + 1,
@@ -45,14 +45,14 @@ export default class KryptstormReact {
     return this._service
       .get("/", { params })
       .then(({ data = {} }) => Promise.resolve(data));
-  }
+  };
 
-  remove(args) {
+  remove = args => {
     const { id } = args;
     let headers = { "X-HTTP-Method-Override": "DELETE" };
 
     return this._service
       .post(`/${id}`, {}, { headers })
       .then(({ data = {} }) => Promise.resolve(data));
-  }
+  };
 }
