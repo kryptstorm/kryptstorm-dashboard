@@ -2,22 +2,25 @@
 import React, { Component } from "react";
 import ReactTable from "react-table";
 import Moment from "moment";
+import _ from "lodash";
 
 // Internal modules
-import KryptstormReact from "./kryptstorm-react";
+import KryptstormClient from "./kryptstorm-client";
 import Status from "../../components/Status";
+import DeleteConfirm from "./DeleteConfirm";
 
-const UsersService = new KryptstormReact({
+const UsersService = new KryptstormClient({
   endpoint: "http://localhost:9999/users"
 });
 
 class UsersList extends Component {
   constructor(props) {
     super(props);
-    this.state = { loading: false, data: [], pages: -1 };
+    this.state = { loading: false, data: [], pages: -1, currentTableState: {} };
   }
 
-  search(args, instance) {
+  search = (args, instance) => {
+    this.setState({ currentTableState: args });
     this.setState({ loading: true });
     UsersService.search(args)
       .then(
@@ -36,10 +39,9 @@ class UsersList extends Component {
         }
       )
       .catch(err => alert(err.message));
-  }
+  };
 
-  remove(args) {
-    args.id = args.value;
+  remove = args => {
     UsersService.remove(args)
       .then(
         ({
@@ -49,11 +51,11 @@ class UsersList extends Component {
         }) => {
           if (errorCode !== "ERROR_NONE") return alert(message);
 
-          return this.search(args);
+          return this.search(this.state.currentTableState);
         }
       )
       .catch(err => alert(err.message));
-  }
+  };
 
   render() {
     const columns = [
@@ -110,11 +112,11 @@ class UsersList extends Component {
         className: "text-center",
         Cell: args =>
           <div className="item-actions">
-            <i
-              className="fa fa-lg fa-fw fa-trash-o text-danger"
-              onClick={this.remove.bind(this, args)}
-            />
             <i className="fa fa-lg fa-fw fa-pencil-square-o" />
+            <DeleteConfirm
+              onYes={this.remove}
+              data={_.assign({}, args, { id: args.value })}
+            />
           </div>,
         filterable: false,
         sortable: false
@@ -156,7 +158,7 @@ class UsersList extends Component {
             pages={this.state.pages}
             columns={columns}
             loading={this.state.loading}
-            onFetchData={this.search.bind(this)}
+            onFetchData={this.search}
             defaultSorted={[
               {
                 id: "createdAt",
