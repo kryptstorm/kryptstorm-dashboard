@@ -1,13 +1,14 @@
+// External modules
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-const STATUS_INACTIVE = 0;
+const STATUS_NEW = 0;
 const STATUS_ACTIVE = 1;
 const STATUS_LOCKED = 2;
 
 class Status extends Component {
   render() {
-    if (this.props.status === STATUS_INACTIVE) {
+    if (this.props.status === STATUS_NEW) {
       return (
         <span className="text-navy">
           <i className="fa fa-fw fa-lg fa-times-circle-o" />

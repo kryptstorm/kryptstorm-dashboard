@@ -9,6 +9,7 @@ import PageContent from "../../components/PageContent";
 
 import Dashboard from "../../views/Dashboard";
 import UsersList from "../../views/Users/List";
+import UserCreate from "../../views/Users/Create";
 
 class App extends Component {
   render() {
@@ -32,6 +33,11 @@ class App extends Component {
                   path="/users/list"
                   name="UsersList"
                   component={UsersList}
+                />
+                <Route
+                  path="/users/create"
+                  name="UserCreate"
+                  component={UserCreate}
                 />
                 <Redirect exact from="/" to="/dashboard" />
                 <Redirect exact from="/users" to="/users/list" />

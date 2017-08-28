@@ -1,3 +1,4 @@
+// External modules
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Button, Modal } from "react-bootstrap";
@@ -22,12 +23,16 @@ class Confirm extends Component {
   };
 
   render() {
+    // If modal is not open, show an element - what is handle click event to show confirm modal
     if (!this.state.isOpen) {
+      // Clone new element allow we add more props to old element
+      // At here, we add an onClick event
       return React.cloneElement(this.props.triggerElement, {
         onClick: this.open
       });
     }
 
+    // Render modal
     return (
       <Modal show={this.state.isOpen} onHide={this.close}>
         <Modal.Header closeButton>
