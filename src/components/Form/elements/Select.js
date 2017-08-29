@@ -9,18 +9,21 @@ import Error from "./Error";
 class Select extends Component {
   constructor(props) {
     super(props);
-    this.state = { selected: this.props.selected };
   }
 
-  select = e => this.setState({ selected: e.target.value });
-
   render() {
-    const name = _.lowerCase(this.props.name);
-    const text = _.upperFirst(this.props.name);
+    const { name, type, filter } = this.props;
+
+    // ReactFrom props
+    const _name = _.lowerCase(name);
+    const _text = _.upperFirst(name);
+
+    // Kryptstorm custom props
+    const _filter = _.isFunction(filter) ? filter : v => v;
 
     return (
-      <FormField field={name}>
-        {({ getTouched, getError }) => {
+      <FormField field={_name}>
+        {({ getTouched, getError, getValue, setValue, setTouched }) => {
           const touch = getTouched();
           const error = getError();
           const hasError = touch && _.isString(error);
@@ -29,15 +32,16 @@ class Select extends Component {
 
           return (
             <div className={className}>
-              <label htmlFor={name}>
-                {text}
+              <label htmlFor={_name}>
+                {_text}
               </label>
               <select
-                name={name}
-                id={name}
+                name={_name}
+                id={_name}
                 className="form-control"
-                value={this.state.selected}
-                onChange={this.select}
+                value={this.props.selected}
+                onChange={e => setValue(_filter(e.target.value))}
+                onBlur={e => setTouched()}
               >
                 {_.map(this.props.data, f =>
                   <option key={f.value} value={f.value}>
@@ -45,7 +49,7 @@ class Select extends Component {
                   </option>
                 )}
               </select>
-              <Error name={name} />
+              <Error name={_name} />
             </div>
           );
         }}

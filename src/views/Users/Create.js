@@ -4,6 +4,13 @@ import _ from "lodash";
 
 // Internal modules
 import Form, { Text, Password, Select, Button } from "../../components/Form";
+import {
+  required,
+  length,
+  range,
+  pattern,
+  email
+} from "../../components/Form/Validators";
 
 // Status
 const STATUS_NEW = 0;
@@ -14,75 +21,31 @@ class UserCreate extends Component {
     super(props);
   }
 
-  onSubmit = attributes => {};
+  onSubmit = attributes => console.log(attributes);
 
   render() {
     const rules = {
-      required: ["username", "email", "password", "status"],
-      properties: {
-        username: { type: "string", minLength: 3, maxLength: 255 },
-        email: { format: "email" },
-        password: { type: "string", minLength: 3, maxLength: 255 },
-        status: {
-          type: "number",
-          enum: [STATUS_NEW, STATUS_ACTIVE]
-        },
-        firstName: { type: "string", maxLength: 255 },
-        lastName: { type: "string", maxLength: 255 }
-      }
+      username: [required(), length(3, 254), pattern(/^[\w+.]+$/)],
+      email: [required(), email()],
+      password: [required(), length(6, 254)],
+      status: [required(), range(STATUS_NEW, STATUS_ACTIVE)]
     };
 
     return (
       <div className="box box-primary">
         <div className="box-header with-border">
           <h3 className="box-title">Title</h3>
-
-          <div className="box-tools pull-right">
-            <button
-              type="button"
-              className="btn btn-box-tool"
-              data-widget="collapse"
-              data-toggle="tooltip"
-              title="Collapse"
-            >
-              <i className="fa fa-minus" />
-            </button>
-            <button
-              type="button"
-              className="btn btn-box-tool"
-              data-widget="remove"
-              data-toggle="tooltip"
-              title="Remove"
-            >
-              <i className="fa fa-times" />
-            </button>
-          </div>
         </div>
         <div className="box-body">
-          <Form onSubmit={this.onSubmit}>
+          <Form onSubmit={this.onSubmit} rules={rules}>
             <div className="row">
               <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <Text
-                  name={"username"}
-                  required
-                  minLength={3}
-                  maxLength={254}
-                  pattern={/^[\w+.]+$/}
-                  filter={_.lowerCase}
-                />
-                <Text
-                  name={"email"}
-                  required
-                  format={"email"}
-                  filter={_.lowerCase}
-                />
+                <Text name={"username"} filter={_.lowerCase} />
+                <Text name={"email"} filter={_.lowerCase} />
                 <Text
                   type={"password"}
                   name={"password"}
                   placeholder={"******"}
-                  required
-                  minLength={6}
-                  maxLength={254}
                 />
               </div>
               <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -97,17 +60,11 @@ class UserCreate extends Component {
                 <Text
                   name={"firstName"}
                   placeholder={"First Name"}
-                  minLength={3}
-                  maxLength={254}
-                  pattern={/^[\w+.]+$/}
                   filter={_.upperFirst}
                 />
                 <Text
                   name={"lastName"}
                   placeholder={"Last Name"}
-                  minLength={3}
-                  maxLength={254}
-                  pattern={/^[\w+.]+$/}
                   filter={_.upperFirst}
                 />
               </div>

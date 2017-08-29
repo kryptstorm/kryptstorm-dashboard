@@ -9,9 +9,15 @@ import Select from "./elements/Select";
 import Button from "./elements/Button";
 
 class XForm extends Component {
+  validate = (values, state, props, instance) => {
+    return {
+      username: "Username cannot be blank."
+    };
+  };
+
   render() {
     return (
-      <Form>
+      <Form validate={this.validate}>
         {({ submitForm }) => {
           return (
             <form onSubmit={submitForm} className={"form"}>
