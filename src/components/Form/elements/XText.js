@@ -27,6 +27,10 @@ class XText extends Component {
           const className =
             getTouched() && hasError ? "form-group has-error" : "form-group";
 
+          console.log("--");
+          console.log(touch);
+          console.log(error);
+
           return (
             <div className={className}>
               <label htmlFor={_name}>{_text}</label>
@@ -38,7 +42,10 @@ class XText extends Component {
                 placeholder={_placeholder}
                 value={getValue("")}
                 onChange={e => setValue(e.target.value)}
-                onBlur={e => setTouched()}
+                onBlur={e => {
+                  setValue(e.target.value);
+                  return setTouched();
+                }}
               />
               <XError name={_name} />
             </div>

@@ -17,7 +17,7 @@ class XForm extends Component {
   validate = (values, state, props, instance) => {
     if (!_.isObject(this.state.rules) || _.isEmpty(this.state.rules)) return {};
 
-    const result = _.reduce(
+    const validation = _.reduce(
       values,
       (r, v, f) => {
         const rules = this.state.rules[f];
@@ -25,15 +25,15 @@ class XForm extends Component {
         if (!_.isArray(rules) || _.isEmpty(rules)) return r;
 
         // Stop validation on the first error (error is exist)
-        // _.transform callback can return false in order to stop iterating
         r[f] = _.transform(
           rules,
           (e, rule) => {
             const error = rule(v, f);
             if (error) {
               e.push(error);
-              return false;
             }
+            // _.transform callback can return false in order to stop iterating
+            return _.isEmpty(e);
           },
           []
         )[0];
@@ -42,13 +42,14 @@ class XForm extends Component {
       },
       {}
     );
-    return result;
+
+    return validation;
   };
 
   render() {
     return (
       <Form onSubmit={this.props.onSubmit} validate={this.validate}>
-        {({ submitForm }) => {
+        {({ submitForm, setAllTouched }) => {
           return <form onSubmit={submitForm}>{this.props.children}</form>;
         }}
       </Form>
