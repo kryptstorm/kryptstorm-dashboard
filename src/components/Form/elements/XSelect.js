@@ -1,23 +1,18 @@
 // External modules
 import React, { Component } from "react";
-import { Form, FormField } from "react-form";
+import { FormField } from "react-form";
 import _ from "lodash";
 
 // Internal modules
-import Error from "./Error";
+import XError from "./XError";
 
-class Text extends Component {
+class XSelect extends Component {
   render() {
-    const { name, type, placeholder, filter } = this.props;
+    const { name } = this.props;
 
     // ReactFrom props
-    const _type = type || "text";
     const _name = _.lowerCase(name);
     const _text = _.upperFirst(name);
-    const _placeholder = placeholder || _text;
-
-    // Kryptstorm custom props
-    const _filter = _.isFunction(filter) ? filter : v => v;
 
     return (
       <FormField field={_name}>
@@ -30,20 +25,22 @@ class Text extends Component {
 
           return (
             <div className={className}>
-              <label htmlFor={_name}>
-                {_text}
-              </label>
-              <input
-                type={_type}
+              <label htmlFor={_name}>{_text}</label>
+              <select
                 name={_name}
                 id={_name}
                 className="form-control"
-                placeholder={_placeholder}
-                value={getValue("")}
-                onChange={e => setValue(_filter(e.target.value))}
+                value={this.props.selected}
+                onChange={e => setValue(e.target.value)}
                 onBlur={e => setTouched()}
-              />
-              <Error name={_name} />
+              >
+                {_.map(this.props.data, f => (
+                  <option key={f.value} value={f.value}>
+                    {f.label}
+                  </option>
+                ))}
+              </select>
+              <XError name={_name} />
             </div>
           );
         }}
@@ -52,4 +49,4 @@ class Text extends Component {
   }
 }
 
-export default Text;
+export default XSelect;

@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { FormField } from "react-form";
 import _ from "lodash";
 
-class Error extends Component {
+class XError extends Component {
   render() {
     const name = _.lowerCase(this.props.name);
 
@@ -26,4 +26,4 @@ class Error extends Component {
   }
 }
 
-export default Error;
+export default XError;
