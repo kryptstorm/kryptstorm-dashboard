@@ -24,4 +24,4 @@ export const pattern = p => (v, f) =>
 // Email
 const _emailPattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export const email = () => (v, f) =>
-  !!pattern(_emailPattern) ? `[${v}] is not a valid email.` : "";
+  !!pattern(_emailPattern)(v, f) ? `[${v}] is not a valid email.` : "";

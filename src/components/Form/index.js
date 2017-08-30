@@ -30,8 +30,6 @@ class XForm extends Component {
           rules,
           (e, rule) => {
             const error = rule(v, f);
-            console.log(rule)
-            console.log(error)
             if (error) {
               e.push(error);
               return false;
